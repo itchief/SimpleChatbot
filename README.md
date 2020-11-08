@@ -1,1 +1,1 @@
-# Simple chatbot for website on pure JavaScript
+# Simple chatbot for website in pure JavaScript
