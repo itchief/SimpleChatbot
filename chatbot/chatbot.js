@@ -8,6 +8,8 @@ function getDateTime() {
 class ChatBotByItchief {
   #$element;
   #data;
+  #url;
+  #keyLS;
   #delay = 500;
   #botId = 0;
   #contentIndex = 1;
@@ -33,9 +35,19 @@ class ChatBotByItchief {
   }
 
   // конструктор
-  constructor(element, data) {
-    this.#data = data;
-    this.#$element = element;
+  constructor(config) {
+    if (config['element']) {
+      this.#$element = config['element'];
+    } else {
+      throw 'ChatBotByItchief: ключ element должен присутствовать в передаваемых данных';
+    }
+    if (config['data']) {
+      this.#data = config['data'];
+    } else {
+      throw 'ChatBotByItchief: ключ data должен присутствовать в передаваемых данных';
+    }
+    this.#url = config['url'] ? config['url'] : '/chatbot/chatbot.php';
+    this.#keyLS = config['keyLS'] ? config['keyLS'] : 'fingerprint';
     this.#outputContent();
     this.#addEventListener();
   }
@@ -101,7 +113,7 @@ class ChatBotByItchief {
   #eventHandlerClick(e) {
     const $target = e.target;
     const botId = $target.dataset.botId;
-    const url = '/chatbot/chatbot.php';
+    const url = this.#url;
     let data = {};
     let humanContent = '';
     if ($target.closest('.chatbot__submit')) {
@@ -148,7 +160,7 @@ class ChatBotByItchief {
 
     // данные для отправки
     const dataSend = JSON.stringify({
-      id: localStorage.getItem('fingerprint'),
+      id: localStorage.getItem(this.#keyLS),
       chat: data,
       start: this.#start,
       date: getDateTime(),
@@ -212,18 +224,19 @@ const chatbotTemplate = () => {
   </div>`;
 };
 
-const chatBotByItchiefInit = (chatbotSel, chatbotBtnSel, data) => {
+const chatBotByItchiefInit = config => {
   let chatbot;
-  let $chatbot = document.querySelector(chatbotSel);
+  let $chatbot = document.querySelector('.chatbot');
   if (!$chatbot) {
     document.body.insertAdjacentHTML('beforeend', chatbotTemplate());
-    $chatbot = document.querySelector(chatbotSel);
+    $chatbot = document.querySelector('.chatbot');
   }
-  document.querySelector(chatbotBtnSel).onclick = e => {
-    e.target.closest(chatbotBtnSel).classList.add('chatbot-btn_hidden');
+  config['element'] = $chatbot;
+  document.querySelector(config.chatbotBtnSel).onclick = e => {
+    e.target.closest(config.chatbotBtnSel).classList.add('chatbot-btn_hidden');
     $chatbot.classList.toggle('chatbot_hidden');
     if (!chatbot) {
-      chatbot = new ChatBotByItchief($chatbot, data);
+      chatbot = new ChatBotByItchief(config);
       return chatbot;
     }
   };

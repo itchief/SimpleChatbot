@@ -59,16 +59,13 @@
   <script src="/chatbot/chatbot.js"></script>
 
   <script>
-    // добавляем хэш fingerprint браузера в localstorage
-    let fingerprint = localStorage.getItem('fingerprint');
-    if (!fingerprint) {
-      Fingerprint2.get(function (components) {
-        fingerprint = Fingerprint2.x64hash128(components.map(function (pair) { return pair.value }).join(), 31)
-        localStorage.setItem('fingerprint', fingerprint)
-      });
-    }
-
-    // данные для бот чата
+    // 1 - Указание ключа в localstorage, в котором будет храниться отпечаток браузера
+    const keyLS = 'fingerprint';
+    // 2 - Указание CSS селектора кнопки, с помощью которой будем вызывать окно диалога с чат-ботом
+    const chatbotBtnSel = '.chatbot-btn';
+    // 3 - URL к chatbot.php
+    const url = '/chatbot/chatbot.php';
+    // 4 - Описание данных, определяющие сценарий диалога для чат-бота
     const data = {
       bot: {
         0: { content: 'Привет! Я бот поддержки сайта <a href="https://itchief.ru" target="_blank">itchief.ru</a> Что вас интересует?', human: [0, 1] },
@@ -89,9 +86,21 @@
         6: { content: 'В начало', bot: 0 },
       }
     }
-
-    // инициализируем chatbot
-    chatBotByItchiefInit('.chatbot', '.chatbot-btn', data);
+    // добавление хэша fingerprint в localstorage
+    let fingerprint = localStorage.getItem(keyLS);
+    if (!fingerprint) {
+      Fingerprint2.get(function (components) {
+        fingerprint = Fingerprint2.x64hash128(components.map(function (pair) { return pair.value }).join(), 31)
+        localStorage.setItem(keyLS, fingerprint)
+      });
+    }
+    // инициализация ChatBotByItchief посредством вызова следующей функции с передачи ей нужных параметров
+    chatBotByItchiefInit({
+      chatbotBtnSel: chatbotBtnSel,
+      data: data,
+      url: url,
+      keyLS: keyLS
+    });
   </script>
 
 </body>

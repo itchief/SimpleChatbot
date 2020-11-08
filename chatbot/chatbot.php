@@ -1,9 +1,5 @@
 <?php
 
-function putContentInFile($content) {
-  $output = date('d.m.Y H:i:s') . PHP_EOL . $content . PHP_EOL . '-------------------------' . PHP_EOL;
-  file_put_contents(dirname(dirname(__FILE__)) . '/logs/logs.txt', $output, FILE_APPEND | LOCK_EX);
-}
 
 $path = $_SERVER['DOCUMENT_ROOT'] . '/chatbot/chats//';
 

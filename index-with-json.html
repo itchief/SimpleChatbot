@@ -59,27 +59,37 @@
   <script src="/chatbot/chatbot.js"></script>
 
   <script>
-    // добавляем хэш fingerprint браузера в localstorage
-    let fingerprint = localStorage.getItem('fingerprint');
+    // 1 - Указание ключа в localstorage, в котором будет храниться отпечаток браузера
+    const keyLS = 'fingerprint';
+    // 2 - Указание URL файла, в котором находится сценарий диалога для чат-бота
+    const url = '/data/data-1.json';
+    // 3 - Указание CSS селектора кнопки, с помощью которой будем вызывать окно диалога с чат-ботом
+    const chatbotBtnSel = '.chatbot-btn';
+    // 4 - URL к chatbot.php
+    const urlChatbot = '/chatbot/chatbot.php';
+    // добавление хэша fingerprint в localstorage
+    let fingerprint = localStorage.getItem(keyLS);
     if (!fingerprint) {
       Fingerprint2.get(function (components) {
         fingerprint = Fingerprint2.x64hash128(components.map(function (pair) { return pair.value }).join(), 31)
-        localStorage.setItem('fingerprint', fingerprint)
+        localStorage.setItem(keyLS, fingerprint)
       });
     }
-
-    // URL файла, в котором хранятся данные для чат-бота
-    url = '/data/data-1.json';
-
+    // получение json-файла, содержащего сценарий диалога для чат-бота через AJAX
     const request = new XMLHttpRequest();
     request.open('GET', url, true);
     request.responseType = 'json';
     request.onload = function () {
-      var status = request.status;
+      const status = request.status;
       if (status === 200) {
         const data = request.response;
-        // инициализируем chatbot
-        chatBotByItchiefInit('.chatbot', '.chatbot-btn', data);
+        // инициализация ChatBotByItchief посредством вызова следующей функции с передачи ей нужных параметров
+        chatBotByItchiefInit({
+          chatbotBtnSel: chatbotBtnSel,
+          data: data,
+          url: urlChatbot,
+          keyLS: keyLS
+        });
       } else {
         console.log(status, request.response);
       }
