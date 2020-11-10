@@ -168,7 +168,7 @@ ChatBotByItchief.prototype._eventHandlerClick = function (e) {
   var $botContent = $botWrapper[$botWrapper.length - 1];
   var $botItems = $botContent.querySelectorAll('.chatbot__content');
   var _this = this;
-  for (var i = 0, length = $botItems; i < length; i++) {
+  for (var i = 0, length = $botItems.length; i < length; i++) {
     data[_this._contentIndex] = {
       type: 'bot',
       content: $botItems[i].innerHTML,
