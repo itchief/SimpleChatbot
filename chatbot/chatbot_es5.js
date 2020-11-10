@@ -229,7 +229,7 @@ ChatBotByItchief.prototype._addEventListener = function () {
 };
 
 var chatbotTemplate = function chatbotTemplate() {
-  return '<div class="chatbot chatbot_hidden"><div class="chatbot__title">Chatbot<span class="chatbot__close">x</span></div><div class="chatbot__wrapper"><div class="chatbot__items"></div></div><div class="chatbot__footer"><input class="chatbot__input" type="text" disabled><button class="chatbot__submit" type="button" disabled><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16"><path fill="currentColor" d="M476 3.2L12.5 270.6a24 24 0 002.2 43.2L121 358.4l287.3-253.2c5.5-4.9 13.3 2.6 8.6 8.3L176 407v80.5a24 24 0 0042.5 15.8L282 426l124.6 52.2a24 24 0 0033-18.2l72-432A24 24 0 00476 3.2z"/></svg>/button></div></div>';
+  return '<div class="chatbot chatbot_hidden"><div class="chatbot__title">Chatbot<span class="chatbot__close">x</span></div><div class="chatbot__wrapper"><div class="chatbot__items"></div></div><div class="chatbot__footer"><input class="chatbot__input" type="text" disabled><button class="chatbot__submit" type="button" disabled><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16"><path fill="currentColor" d="M476 3.2L12.5 270.6a24 24 0 002.2 43.2L121 358.4l287.3-253.2c5.5-4.9 13.3 2.6 8.6 8.3L176 407v80.5a24 24 0 0042.5 15.8L282 426l124.6 52.2a24 24 0 0033-18.2l72-432A24 24 0 00476 3.2z"/></svg></button></div></div>';
 };
 
 var chatBotByItchiefInit = function (config) {
