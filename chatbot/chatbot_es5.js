@@ -241,7 +241,6 @@ var chatBotByItchiefInit = function (config) {
   }
   config['element'] = $chatbot;
   document.querySelector(config.chatbotBtnSel).onclick = function (e) {
-    console.log(e.target);
     e.target.closest(config.chatbotBtnSel).classList.add('chatbot-btn_hidden');
     $chatbot.classList.toggle('chatbot_hidden');
     if (!chatbot) {
