@@ -23,8 +23,8 @@ $chatbot-scrollbar-thumb: #eee;
 .chatbot-btn {
   position: fixed;
   color: #fff;
-  bottom: 26px;
-  right: 25px;
+  bottom: 32px;
+  right: 32px;
   background-color: #757575;
   padding: 14px;
   cursor: pointer;
@@ -48,16 +48,15 @@ $chatbot-scrollbar-thumb: #eee;
 .chatbot {
   display: flex;
   flex-direction: column;
-  width: 320px;
+  width: 100%;
   background-color: $chatbot-bg;
-  border-radius: 0.25rem;
   border: 1px solid $chatbot-title-bg;
   line-height: 1.2;
   color: $chatbot-color;
   position: fixed;
-  bottom: 32px;
-  right: 32px;
-  height: 300px;
+  bottom: 0;
+  right: 0;
+  height: 100%;
   transform: scale(1);
   transform-origin: right bottom;
   transition: transform 0.3s ease;
@@ -72,7 +71,16 @@ $chatbot-scrollbar-thumb: #eee;
 
 @media (min-width: 576px) {
   .chatbot {
-    width: 350px;
+    width: 400px;
+  }
+}
+
+@media (min-height: 600px) {
+  .chatbot {
+    height: 480px;
+    bottom: 32px;
+    right: 32px;
+    border-radius: 0.25rem;
   }
 }
 
@@ -109,6 +117,8 @@ $chatbot-scrollbar-thumb: #eee;
 
 .chatbot__wrapper {
   display: flex;
+  -ms-flex: 1 0 auto;
+  flex: 1 0 0%;
   flex-direction: column;
   overflow-y: auto;
 }
@@ -132,6 +142,7 @@ $chatbot-scrollbar-thumb: #eee;
 .chatbot__item {
   width: 100%;
   display: flex;
+  flex-shrink: 0;
   align-items: baseline;
   margin-bottom: 0.75rem;
 }
@@ -227,6 +238,11 @@ $chatbot-scrollbar-thumb: #eee;
   position: relative;
 }
 
+/* ie11 */
+.chatbot__input::-ms-clear {
+  display: none;
+}
+
 .chatbot__input {
   display: block;
   width: 100%;
@@ -239,8 +255,8 @@ $chatbot-scrollbar-thumb: #eee;
   background-color: #fff;
   background-clip: padding-box;
   border: 1px solid #ced4da;
-  border-radius: .25rem;
-  transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
 .chatbot__input:focus {
@@ -263,7 +279,7 @@ $chatbot-scrollbar-thumb: #eee;
   border: 1px solid transparent;
   padding: 7px 5px;
   line-height: 1;
-  background-color: unset;
+  background-color: transparent;
   position: absolute;
   top: 6px;
   right: 12px;
