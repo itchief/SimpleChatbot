@@ -82,7 +82,7 @@ $chatbot-toggle-hover-bg-color: darken($chatbot-bg, 30%);
 
 .chatbot-toggle-tooltip::after {
   position: absolute;
-  content: "";
+  content: '';
   top: 50%;
   border: 5px solid transparent;
   border-left-color: rgba(46, 48, 51, 0.9);
@@ -172,12 +172,6 @@ $chatbot-toggle-hover-bg-color: darken($chatbot-bg, 30%);
   flex-direction: column;
   overflow-x: hidden;
   transition: all 0.3s ease;
-}
-
-@media (min-height: 500px) {
-  .chatbot__items {
-    height: 400px;
-  }
 }
 
 .chatbot__item {

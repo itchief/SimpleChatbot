@@ -136,11 +136,6 @@
   transition: all 0.3s ease;
 }
 
-@media (min-height: 500px) {
-  .chatbot__items {
-    height: 400px;
-  }
-}
 .chatbot__item {
   width: 100%;
   display: flex;
