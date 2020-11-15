@@ -13,4 +13,4 @@
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/itchief/SimpleChatbot)
 ![GitHub all releases](https://img.shields.io/github/downloads/itchief/SimpleChatbot/total)
-https://img.shields.io/github/size/itchief/SimpleChatbot/chatbot/chatbot.js?label=chatbot.js
+![GitHub file size in bytes](https://img.shields.io/github/size/itchief/SimpleChatbot/chatbot/chatbot.js?label=chatbot.js)
