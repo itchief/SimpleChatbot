@@ -233,7 +233,14 @@ const chatBotByItchiefInit = config => {
   }
   config['element'] = $chatbot;
   document.querySelector(config.chatbotBtnSel).onclick = e => {
-    e.target.closest(config.chatbotBtnSel).classList.add('chatbot-btn_hidden');
+    const $chatbotToggle = e.target.closest(config.chatbotBtnSel);
+    if ($chatbotToggle) {
+      $chatbotToggle.classList.add('chatbot-btn_hidden');
+      const $chatbotToggleTooltip = chatbotToggle.querySelector('.chatbot-toggle-tooltip');
+      if ($chatbotToggleTooltip) {
+        $chatbotToggleTooltip.classList.remove('chatbot-toggle-tooltip_show');
+      }
+    }
     $chatbot.classList.toggle('chatbot_hidden');
     if (!chatbot) {
       chatbot = new ChatBotByItchief(config);

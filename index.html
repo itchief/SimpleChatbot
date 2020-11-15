@@ -50,6 +50,7 @@
       <path fill="currentColor"
         d="M14 8.999v-5a2.003 2.003 0 00-2-2H3a2.003 2.003 0 00-2 2v5a2.003 2.003 0 002 2v1.694a.302.302 0 00.486.244l2.587-1.945H12A1.997 1.997 0 0014 9zm3-2h-2v2a3.003 3.003 0 01-3 3H7v2a2.003 2.003 0 002 2h3.927l2.59 1.941c.198.15.483.004.483-.243v-1.701h1a2.003 2.003 0 002-1.997v-5a2.003 2.003 0 00-2-2z" />
     </svg>
+    <div class="chatbot-toggle-tooltip">Есть вопрос?</div>
   </div>
 
   <!-- FingerPrint JS -->
@@ -100,6 +101,14 @@
       url: url,
       keyLS: keyLS
     });
+
+    setTimeout(() => {
+      const chatbotToggleTooltip = document.querySelector('.chatbot-toggle-tooltip');
+      chatbotToggleTooltip.classList.add('chatbot-toggle-tooltip_show');
+      setTimeout(() => {
+        chatbotToggleTooltip.classList.remove('chatbot-toggle-tooltip_show');
+      }, 10000)
+    }, 10000)
   </script>
 
 </body>

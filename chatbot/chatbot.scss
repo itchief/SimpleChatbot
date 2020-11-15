@@ -2,7 +2,6 @@
 $chatbot-color: #212529;
 $chatbot-bg: #eac9d4;
 $chatbot-title-bg: darken($chatbot-bg, 10%);
-
 /* bot */
 $chatbot-bot-color: #f9feff;
 $chatbot-bot-bg: darken($chatbot-bg, 30%);
@@ -31,14 +30,18 @@ $chatbot-submit-color: darken($chatbot-bg, 10%);
 $chatbot-submit-hover-color: darken($chatbot-bg, 30%);
 /* scrollbar */
 $chatbot-scrollbar-thumb: darken($chatbot-bg, 10%);
+/* chatbot-toggle */
+$chatbot-toggle-color: #fff;
+$chatbot-toggle-bg-color: darken($chatbot-bg, 20%);
+$chatbot-toggle-hover-bg-color: darken($chatbot-bg, 30%);
 
 /* chatbot-btn */
 .chatbot-btn {
   position: fixed;
-  color: #fff;
+  color: $chatbot-toggle-color;
   bottom: 32px;
   right: 32px;
-  background-color: #757575;
+  background-color: $chatbot-toggle-bg-color;
   padding: 14px;
   cursor: pointer;
   text-align: center;
@@ -50,11 +53,41 @@ $chatbot-scrollbar-thumb: darken($chatbot-bg, 10%);
 }
 
 .chatbot-btn:hover {
-  background-color: #616161;
+  background-color: $chatbot-toggle-hover-bg-color;
 }
 
 .chatbot-btn_hidden {
   display: none;
+}
+
+.chatbot-toggle-tooltip {
+  position: absolute;
+  right: 55px;
+  white-space: nowrap;
+  color: #fff;
+  background: rgba(46, 48, 51, 0.9);
+  padding: 5px 8px;
+  border-radius: 4px;
+  transition: all 200ms ease-in-out;
+  display: none;
+}
+
+.chatbot-btn:hover .chatbot-toggle-tooltip {
+  display: block;
+}
+
+.chatbot-toggle-tooltip_show {
+  display: block;
+}
+
+.chatbot-toggle-tooltip::after {
+  position: absolute;
+  content: "";
+  top: 50%;
+  border: 5px solid transparent;
+  border-left-color: rgba(46, 48, 51, 0.9);
+  margin-top: -5px;
+  right: -10px;
 }
 
 /* chatbot */

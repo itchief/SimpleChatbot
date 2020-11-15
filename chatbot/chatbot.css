@@ -1,11 +1,10 @@
-
 /* chatbot-btn */
 .chatbot-btn {
   position: fixed;
   color: #fff;
   bottom: 32px;
   right: 32px;
-  background-color: #757575;
+  background-color: #cd809a;
   padding: 14px;
   cursor: pointer;
   text-align: center;
@@ -17,11 +16,41 @@
 }
 
 .chatbot-btn:hover {
-  background-color: #616161;
+  background-color: #bf5b7c;
 }
 
 .chatbot-btn_hidden {
   display: none;
+}
+
+.chatbot-toggle-tooltip {
+  position: absolute;
+  right: 55px;
+  white-space: nowrap;
+  color: #fff;
+  background: rgba(46, 48, 51, 0.9);
+  padding: 5px 8px;
+  border-radius: 4px;
+  transition: all 200ms ease-in-out;
+  display: none;
+}
+
+.chatbot-btn:hover .chatbot-toggle-tooltip {
+  display: block;
+}
+
+.chatbot-toggle-tooltip_show {
+  display: block;
+}
+
+.chatbot-toggle-tooltip::after {
+  position: absolute;
+  content: '';
+  top: 50%;
+  border: 5px solid transparent;
+  border-left-color: rgba(46, 48, 51, 0.9);
+  margin-top: -5px;
+  right: -10px;
 }
 
 /* chatbot */
@@ -190,7 +219,8 @@
   line-height: 1.2;
   border-radius: 0.25rem;
   box-shadow: 2px 3px 4px 0 rgba(0, 0, 0, 0.25);
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
 .btn:hover {
