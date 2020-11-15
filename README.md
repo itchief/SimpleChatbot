@@ -8,3 +8,6 @@
 </h1>
 
 #### Simple chatbot for website in pure JavaScript
+
+##Status
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/itchief/SimpleChatbot)
