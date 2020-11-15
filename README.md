@@ -7,4 +7,4 @@
   SimpleChatbot
 </h1>
 
-# Simple chatbot for website in pure JavaScript
+#### Simple chatbot for website in pure JavaScript
