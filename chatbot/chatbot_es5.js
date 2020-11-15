@@ -244,7 +244,7 @@ var chatBotByItchiefInit = function (config) {
     var $chatbotToggle = e.target.closest(config.chatbotBtnSel);
     if ($chatbotToggle) {
       $chatbotToggle.classList.add('chatbot-btn_hidden');
-      var $chatbotToggleTooltip = chatbotToggle.querySelector('.chatbot-toggle-tooltip');
+      var $chatbotToggleTooltip = $chatbotToggle.querySelector('.chatbot-toggle-tooltip');
       if ($chatbotToggleTooltip) {
         $chatbotToggleTooltip.classList.remove('chatbot-toggle-tooltip_show');
       }
