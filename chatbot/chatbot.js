@@ -191,7 +191,7 @@ class ChatBotByItchief {
     }
     const dataToStorageJSON = JSON.stringify({
       botId: this.#botId,
-      data: dataFormJSON,
+      data: dataToStorage,
     });
     localStorage.setItem('chatbot', dataToStorageJSON);
 
