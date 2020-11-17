@@ -204,7 +204,7 @@ ChatBotByItchief.prototype._eventHandlerClick = function (e) {
   }
   var dataToStorageJSON = JSON.stringify({
     botId: this._botId,
-    data: dataFormJSON,
+    data: dataToStorage,
   });
   localStorage.setItem('chatbot', dataToStorageJSON);
 
