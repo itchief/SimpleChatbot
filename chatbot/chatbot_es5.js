@@ -102,7 +102,7 @@ ChatBotByItchief.prototype._outputContent = function (interval) {
   var fn2 = function () {
     if (_this._getData('human', humanIds[0]).content === '') {
       _this._$element.querySelector('.chatbot__input').disabled = false;
-      _this._$element.querySelector('.chatbot__input').dataset.name = this._getData(
+      _this._$element.querySelector('.chatbot__input').dataset.name = _this._getData(
         'human',
         humanIds[0]
       ).name;
