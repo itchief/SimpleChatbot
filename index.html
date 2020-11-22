@@ -53,6 +53,7 @@
     <div class="chatbot-toggle-tooltip">Есть вопрос?</div>
   </div>
 
+
   <!-- FingerPrint JS -->
   <script src="/chatbot/fp2.js"></script>
   <!-- ChatBot JS -->
@@ -68,22 +69,25 @@
     // 4 - Описание данных, определяющие сценарий диалога для чат-бота
     const data = {
       bot: {
-        0: { content: 'Привет! Я бот поддержки сайта <a href="https://itchief.ru" target="_blank">itchief.ru</a> Что вас интересует?', human: [0, 1] },
-        1: { content: 'Какой у вас вопрос?', human: [2] },
-        2: { content: 'Спасибо! Скажите, как с Вами удобнее будет связаться?', human: [3, 4] },
-        3: { content: 'Отлично, укажите пожалуйста Ваш Email ниже', human: [5] },
-        4: { content: 'Готово! Мы свяжемся с Вами в ближайшее время. Всего хорошего!', human: [6] },
-        5: { content: 'Для этого перейдите на <a href="https://itchief.ru/javascript/chatbot-for-website" target="_blank">эту страницу</a>. Она содержит подробную инструкцию по использованию этого чат-бота.', human: [6] },
-        6: { content: 'Отлично, укажите пожалуйста Ваш телефон ниже', human: [5] },
+        0: { content: 'Привет! Давайте познакомимся, я Инфинити - бот поддержки сайта <a href="https://itchief.ru" target="_blank">itchief.ru</a>. А вас как зовут?', human: [0, 1] },
+        1: { content: 'Приятно познакомиться с вами, {{name}}. Что вас интересует?', human: [1, 2] },
+        2: { content: '{{name}}, какой у вас вопрос?', human: [3] },
+        3: { content: 'Спасибо, {{name}}! Скажите, как с вами удобнее будет связаться?', human: [4, 5] },
+        4: { content: 'Отлично. {{name}}, укажите пожалуйста ваш Email ниже', human: [6] },
+        5: { content: 'Готово! {{name}}, мы свяжемся с вами в ближайшее время по {{contact}}. Всего хорошего!', human: [7] },
+        6: { content: '{{name}}, для этого перейдите на <a href="https://itchief.ru/javascript/chatbot-for-website" target="_blank">эту страницу</a>. Она содержит подробную инструкцию по использованию этого чат-бота.', human: [7] },
+        7: { content: 'Отлично, укажите пожалуйста ваш телефон ниже', human: [6] },
+        8: { content: '{{name}}, что вас интересует?', human: [1, 2] },
       },
       human: {
-        0: { content: 'Хочу оставить запрос разработчику чат-бота', bot: 1 },
-        1: { content: 'Меня интересует разработка чат-бота', bot: 5 },
-        2: { content: '', bot: 2 },
-        3: { content: 'по телефону', bot: 6 },
-        4: { content: 'по email', bot: 3 },
-        5: { content: '', bot: 4 },
-        6: { content: 'В начало', bot: 0 },
+        0: { content: '', bot: 1, name: 'name' },
+        1: { content: 'Хочу оставить запрос разработчику чат-бота', bot: 2 },
+        2: { content: 'Меня интересует разработка чат-бота', bot: 6 },
+        3: { content: '', bot: 3, name: '' },
+        4: { content: 'по телефону', bot: 7 },
+        5: { content: 'по email', bot: 4 },
+        6: { content: '', bot: 5, name: 'contact'},
+        7: { content: 'В начало', bot: 8 },
       }
     }
     // добавление хэша fingerprint в localstorage
@@ -102,13 +106,14 @@
       keyLS: keyLS
     });
 
-    setTimeout(() => {
+    setTimeout(function () {
       const chatbotToggleTooltip = document.querySelector('.chatbot-toggle-tooltip');
       chatbotToggleTooltip.classList.add('chatbot-toggle-tooltip_show');
-      setTimeout(() => {
+      setTimeout(function () {
         chatbotToggleTooltip.classList.remove('chatbot-toggle-tooltip_show');
       }, 10000)
     }, 10000)
+
   </script>
 
 </body>
