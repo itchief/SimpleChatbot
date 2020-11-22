@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://itchief.ru/javascript/chatbot-for-website">
-    <img alt="Простой чат-бот для сайта на чистом JavaScript" src="https://github.com/itchief/SimpleChatbot/raw/main/itchief_logo.png" width="80">
+    <img alt="Простой чат-бот для сайта на чистом JavaScript" src="https://github.com/itchief/SimpleChatbot/raw/main/itchief_logo.png" width="75">
   </a>
 </p>
 <h1 align="center">
