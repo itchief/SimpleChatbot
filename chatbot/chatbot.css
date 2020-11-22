@@ -4,7 +4,7 @@
   color: #fff;
   bottom: 32px;
   right: 32px;
-  background-color: #cd809a;
+  background-color: #a355f6;
   padding: 14px;
   cursor: pointer;
   text-align: center;
@@ -16,7 +16,7 @@
 }
 
 .chatbot-btn:hover {
-  background-color: #bf5b7c;
+  background-color: #8925f3;
 }
 
 .chatbot-btn_hidden {
@@ -58,8 +58,8 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  background-color: #eac9d4;
-  border: 1px solid #dca4b7;
+  background-color: #d7b6fb;
+  border: 1px solid #bd86f8;
   line-height: 1.2;
   color: #212529;
   position: fixed;
@@ -88,7 +88,7 @@
   }
 }
 .chatbot__title {
-  background-color: #dca4b7;
+  background-color: #bd86f8;
   text-align: center;
   display: flex;
   padding: 0.5rem 0.75rem;
@@ -164,8 +164,8 @@
 /* bot */
 .chatbot__content_bot {
   color: #f9feff;
-  background: #bf5b7c;
-  border: solid 1px #bf5b7c;
+  background: #8925f3;
+  border: solid 1px #8925f3;
   border-radius: 1rem;
 }
 
@@ -249,7 +249,7 @@
   color: #212529;
   background-color: #f9feff;
   background-clip: padding-box;
-  border: 1px solid #dca4b7;
+  border: 1px solid #bd86f8;
   border-radius: 0.25rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
@@ -257,7 +257,7 @@
 .chatbot__input:focus {
   color: #212529;
   background-color: #f9feff;
-  border-color: #bf5b7c;
+  border-color: #8925f3;
   outline: 0;
 }
 
@@ -278,14 +278,14 @@
   position: absolute;
   top: 6px;
   right: 12px;
-  color: #dca4b7;
+  color: #bd86f8;
 }
 
 .chatbot__submit:focus:not(:disabled),
 .chatbot__submit:hover:not(:disabled) {
   outline: 0;
   box-shadow: none;
-  color: #bf5b7c;
+  color: #8925f3;
   cursor: pointer;
 }
 
@@ -304,13 +304,13 @@
 }
 
 .chatbot__items::-webkit-scrollbar-track {
-  background-color: #eac9d4;
+  background-color: #d7b6fb;
 }
 
 .chatbot__items::-webkit-scrollbar-thumb {
-  background-color: #dca4b7;
+  background-color: #bd86f8;
   border-radius: 7px;
-  border: 4px solid #eac9d4;
+  border: 4px solid #d7b6fb;
 }
 
 .chatbot__items::-webkit-scrollbar-button {

@@ -1,6 +1,6 @@
 /* chatbot */
 $chatbot-color: #212529;
-$chatbot-bg: #eac9d4;
+$chatbot-bg: lighten(#250448, 70%);
 $chatbot-title-bg: darken($chatbot-bg, 10%);
 /* bot */
 $chatbot-bot-color: #f9feff;
