@@ -38,10 +38,14 @@ var ChatBotByItchief = function (config) {
   this._botId = 0;
   this._contentIndex = 1;
   this._start = true;
+  this._fields = {};
 
   var fromStorage = localStorage.getItem('chatbot');
   if (fromStorage) {
     var dataFromStorage = JSON.parse(fromStorage);
+    for (var key in dataFromStorage.fields) {
+      this._fields[key] = dataFromStorage.fields[key];
+    }
     var html = [];
     for (var i = 0, length = dataFromStorage.data.length; i < length; i++) {
       var value = dataFromStorage.data[i];
@@ -83,7 +87,13 @@ ChatBotByItchief.prototype._outputContent = function (interval) {
   var botData = this._getData('bot', this._botId);
   var humanIds = botData.human;
   var $container = this._$element.querySelector('.chatbot__items');
-  var $botContent = this._template('bot', botData.content);
+  var botContent = botData.content;
+  if (botContent.indexOf('{{') !== -1) {
+    for (var key in this._fields) {
+      botContent = botContent.replaceAll('{{'.concat(key, '}}'), this._fields[key]);
+    }
+  }
+  var $botContent = this._template('bot', botContent);
   var _this = this;
   var fn1 = function () {
     $container.insertAdjacentHTML('beforeend', $botContent);
@@ -92,6 +102,10 @@ ChatBotByItchief.prototype._outputContent = function (interval) {
   var fn2 = function () {
     if (_this._getData('human', humanIds[0]).content === '') {
       _this._$element.querySelector('.chatbot__input').disabled = false;
+      _this._$element.querySelector('.chatbot__input').dataset.name = this._getData(
+        'human',
+        humanIds[0]
+      ).name;
       _this._$element.querySelector('.chatbot__submit').disabled = true;
       _this._$element.querySelector('.chatbot__input').focus();
       _this._$element.querySelector('.chatbot__submit').dataset.botId = _this._getData(
@@ -146,8 +160,9 @@ ChatBotByItchief.prototype._eventHandlerClick = function (e) {
   var $target = e.target;
   var botId = $target.dataset.botId;
   var url = this._url;
-  let data = {};
-  let humanContent = '';
+  var data = {};
+  var humanContent = '';
+  var humanField = '';
   if ($target.closest('.chatbot__submit')) {
     if ($target.closest('.chatbot__submit').disabled) {
       return;
@@ -157,6 +172,10 @@ ChatBotByItchief.prototype._eventHandlerClick = function (e) {
     }
     this._botId = +$target.closest('.chatbot__submit').dataset.botId;
     humanContent = this._$element.querySelector('.chatbot__input').value;
+    humanField = this._$element.querySelector('.chatbot__input').dataset.name;
+    if (humanField) {
+      this._fields[humanField] = humanContent;
+    }
     this._addToChatHumanResponse(humanContent);
     this._outputContent(this._delay);
   } else if (botId) {
@@ -193,8 +212,10 @@ ChatBotByItchief.prototype._eventHandlerClick = function (e) {
 
   var fromStorage = localStorage.getItem('chatbot');
   var dataToStorage = [];
+  var fieldsToStorage = {};
   if (fromStorage) {
     dataToStorage = JSON.parse(fromStorage).data;
+    fieldsToStorage = JSON.parse(fromStorage).fields;
   }
   for (var key in data) {
     dataToStorage.push({
@@ -202,9 +223,13 @@ ChatBotByItchief.prototype._eventHandlerClick = function (e) {
       content: data[key].content,
     });
   }
+  if (humanField) {
+    fieldsToStorage[humanField] = humanContent;
+  }
   var dataToStorageJSON = JSON.stringify({
     botId: this._botId,
     data: dataToStorage,
+    fields: fieldsToStorage,
   });
   localStorage.setItem('chatbot', dataToStorageJSON);
 
