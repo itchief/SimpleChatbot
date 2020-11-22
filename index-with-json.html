@@ -96,10 +96,10 @@
     };
     request.send();
 
-    setTimeout(() => {
+    setTimeout(function () {
       const chatbotToggleTooltip = document.querySelector('.chatbot-toggle-tooltip');
       chatbotToggleTooltip.classList.add('chatbot-toggle-tooltip_show');
-      setTimeout(() => {
+      setTimeout(function () {
         chatbotToggleTooltip.classList.remove('chatbot-toggle-tooltip_show');
       }, 10000)
     }, 10000)
