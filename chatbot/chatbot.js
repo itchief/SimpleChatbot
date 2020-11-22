@@ -14,6 +14,7 @@ class ChatBotByItchief {
   #botId = 0;
   #contentIndex = 1;
   #start = true;
+  #fields = {};
 
   // общий шаблон
   #template(type, content, state = '') {
@@ -45,6 +46,9 @@ class ChatBotByItchief {
     const fromStorage = localStorage.getItem('chatbot');
     if (fromStorage) {
       const dataFromStorage = JSON.parse(fromStorage);
+      for (let key in dataFromStorage.fields) {
+        this.#fields[key] = dataFromStorage.fields[key];
+      }
       let html = [];
       dataFromStorage.data.forEach(value => {
         const state = value.type === 'bot' ? '' : '-disabled';
@@ -72,7 +76,13 @@ class ChatBotByItchief {
     const botData = this.#getData('bot', this.#botId);
     const humanIds = botData.human;
     const $container = this.#$element.querySelector('.chatbot__items');
-    const $botContent = this.#template('bot', botData.content);
+    let botContent = botData.content;
+    if (botContent.indexOf('{{') !== -1) {
+      for (let key in this.#fields) {
+        botContent = botContent.replaceAll(`{{${key}}}`, this.#fields[key]);
+      }
+    }
+    const $botContent = this.#template('bot', botContent);
     const fn1 = () => {
       $container.insertAdjacentHTML('beforeend', $botContent);
       $container.scrollTop = $container.scrollHeight;
@@ -80,6 +90,10 @@ class ChatBotByItchief {
     const fn2 = () => {
       if (this.#getData('human', humanIds[0]).content === '') {
         this.#$element.querySelector('.chatbot__input').disabled = false;
+        this.#$element.querySelector('.chatbot__input').dataset.name = this.#getData(
+          'human',
+          humanIds[0]
+        ).name;
         this.#$element.querySelector('.chatbot__submit').disabled = true;
         this.#$element.querySelector('.chatbot__input').focus();
         this.#$element.querySelector('.chatbot__submit').dataset.botId = this.#getData(
@@ -136,6 +150,7 @@ class ChatBotByItchief {
     const url = this.#url;
     let data = {};
     let humanContent = '';
+    let humanField = '';
     if ($target.closest('.chatbot__submit')) {
       if ($target.closest('.chatbot__submit').disabled) {
         return;
@@ -145,6 +160,10 @@ class ChatBotByItchief {
       }
       this.#botId = +$target.closest('.chatbot__submit').dataset.botId;
       humanContent = this.#$element.querySelector('.chatbot__input').value;
+      humanField = this.#$element.querySelector('.chatbot__input').dataset.name;
+      if (humanField) {
+        this.#fields[humanField] = humanContent;
+      }
       this.#addToChatHumanResponse(humanContent);
       this.#outputContent(this.#delay);
     } else if (botId) {
@@ -180,8 +199,10 @@ class ChatBotByItchief {
 
     const fromStorage = localStorage.getItem('chatbot');
     let dataToStorage = [];
+    let fieldsToStorage = {};
     if (fromStorage) {
       dataToStorage = JSON.parse(fromStorage).data;
+      fieldsToStorage = JSON.parse(fromStorage).fields;
     }
     for (const key in data) {
       dataToStorage.push({
@@ -189,9 +210,13 @@ class ChatBotByItchief {
         content: data[key].content,
       });
     }
+    if (humanField) {
+      fieldsToStorage[humanField] = humanContent;
+    }
     const dataToStorageJSON = JSON.stringify({
       botId: this.#botId,
       data: dataToStorage,
+      fields: fieldsToStorage,
     });
     localStorage.setItem('chatbot', dataToStorageJSON);
 
