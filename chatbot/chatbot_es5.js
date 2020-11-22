@@ -90,7 +90,7 @@ ChatBotByItchief.prototype._outputContent = function (interval) {
   var botContent = botData.content;
   if (botContent.indexOf('{{') !== -1) {
     for (var key in this._fields) {
-      botContent = botContent.replaceAll('{{'.concat(key, '}}'), this._fields[key]);
+      botContent = botContent.split('{{'.concat(key, '}}')).join(this._fields[key]);
     }
   }
   var $botContent = this._template('bot', botContent);
