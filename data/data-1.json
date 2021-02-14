@@ -1,7 +1,10 @@
 {
   "bot": {
     "0": {
-      "content": "Привет! Я Инфинити - бот поддержки сайта <a href=\"https://itchief.ru\" target=\"_blank\">itchief.ru</a>",
+      "content": [
+        "Привет!",
+        "Я Инфинити - бот поддержки сайта <a href=\"https://itchief.ru\" target=\"_blank\">itchief.ru</a>"
+      ],
       "human": [0, 1, 2]
     },
     "1": { "content": "Я тоже рад, как мне к Вам обращаться?", "human": [3] },

@@ -77,16 +77,21 @@ class ChatBotByItchief {
     const humanIds = botData.human;
     const $container = this.#$element.querySelector('.chatbot__items');
     let botContent = botData.content;
-    if (botContent.indexOf('{{') !== -1) {
-      for (let key in this.#fields) {
-        botContent = botContent.replaceAll(`{{${key}}}`, this.#fields[key]);
+    if (Array.isArray(botContent)) {
+      botContent.forEach((element, i) => {
+        if (botContent[i].indexOf('{{') !== -1) {
+          for (let key in this.#fields) {
+            botContent[i] = botContent[i].replaceAll(`{{${key}}}`, this.#fields[key]);
+          }
+        }
+      });
+    } else {
+      if (botContent.indexOf('{{') !== -1) {
+        for (let key in this.#fields) {
+          botContent = botContent.replaceAll(`{{${key}}}`, this.#fields[key]);
+        }
       }
     }
-    const $botContent = this.#template('bot', botContent);
-    const fn1 = () => {
-      $container.insertAdjacentHTML('beforeend', $botContent);
-      $container.scrollTop = $container.scrollHeight;
-    };
     const fn2 = () => {
       if (this.#getData('human', humanIds[0]).content === '') {
         this.#$element.querySelector('.chatbot__input').disabled = false;
@@ -114,14 +119,39 @@ class ChatBotByItchief {
       }
     };
     if (interval) {
-      window.setTimeout(() => {
-        fn1();
+      let times = 1;
+      if (Array.isArray(botContent)) {
+        botContent.forEach(element => {
+          const $botContent = this.#template('bot', element);
+          window.setTimeout(() => {
+            $container.insertAdjacentHTML('beforeend', $botContent);
+            $container.scrollTop = $container.scrollHeight;
+          }, interval * times);
+          times++;
+        });
+      } else {
+        const $botContent = this.#template('bot', botContent);
         window.setTimeout(() => {
-          fn2();
-        }, interval);
-      }, interval);
+          $container.insertAdjacentHTML('beforeend', $botContent);
+          $container.scrollTop = $container.scrollHeight;
+        }, interval * times);
+        times++;
+      }
+      window.setTimeout(() => {
+        fn2();
+      }, interval * times);
     } else {
-      fn1();
+      if (Array.isArray(botContent)) {
+        botContent.forEach(element => {
+          const $botContent = this.#template('bot', element);
+          $container.insertAdjacentHTML('beforeend', $botContent);
+          $container.scrollTop = $container.scrollHeight;
+        });
+      } else {
+        const $botContent = this.#template('bot', botContent);
+        $container.insertAdjacentHTML('beforeend', $botContent);
+        $container.scrollTop = $container.scrollHeight;
+      }
       fn2();
     }
   }
@@ -180,17 +210,33 @@ class ChatBotByItchief {
       return;
     }
     e.preventDefault();
-    // получаем последние сообщение бота
+    // получаем последние сообщения бота
     const $botWrapper = document.querySelectorAll('.chatbot__item_bot');
-    const $botContent = $botWrapper[$botWrapper.length - 1];
-    const $botItems = $botContent.querySelectorAll('.chatbot__content');
-    $botItems.forEach($element => {
-      data[this.#contentIndex] = {
-        type: 'bot',
-        content: $element.innerHTML,
-      };
-      this.#contentIndex++;
-    });
+    const $botWrapperLast = $botWrapper[$botWrapper.length - 1];
+    let $prev = $botWrapperLast;
+    let $first = $prev;
+    while ($prev) {
+      if (!$prev.classList.contains('chatbot__item_bot')) {
+        break;
+      }
+      $first = $prev;
+      $prev = $prev.previousElementSibling;
+    }
+    let $botContent = $first;
+    while ($botContent) {
+      if (!$botContent.classList.contains('chatbot__item_bot')) {
+        break;
+      }
+      let $botItems = $botContent.querySelectorAll('.chatbot__content');
+      $botItems.forEach($element => {
+        data[this.#contentIndex] = {
+          type: 'bot',
+          content: $element.innerHTML,
+        };
+        this.#contentIndex++;
+      });
+      $botContent = $botContent.nextElementSibling;
+    }
     data[this.#contentIndex] = {
       type: 'human',
       content: humanContent,

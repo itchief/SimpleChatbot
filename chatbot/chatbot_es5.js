@@ -88,17 +88,22 @@ ChatBotByItchief.prototype._outputContent = function (interval) {
   var humanIds = botData.human;
   var $container = this._$element.querySelector('.chatbot__items');
   var botContent = botData.content;
-  if (botContent.indexOf('{{') !== -1) {
-    for (var key in this._fields) {
-      botContent = botContent.split('{{'.concat(key, '}}')).join(this._fields[key]);
+  if (Array.isArray(botContent)) {
+    for (var i = 0, length = botContent.length; i < length; i++) {
+      if (botContent[i].indexOf('{{') !== -1) {
+        for (let key in this._fields) {
+          botContent[i] = botContent[i].split('{{'.concat(key, '}}')).join(this._fields[key]);
+        }
+      }
+    }
+  } else {
+    if (botContent.indexOf('{{') !== -1) {
+      for (var key in this._fields) {
+        botContent = botContent.split('{{'.concat(key, '}}')).join(this._fields[key]);
+      }
     }
   }
-  var $botContent = this._template('bot', botContent);
   var _this = this;
-  var fn1 = function () {
-    $container.insertAdjacentHTML('beforeend', $botContent);
-    $container.scrollTop = $container.scrollHeight;
-  };
   var fn2 = function () {
     if (_this._getData('human', humanIds[0]).content === '') {
       _this._$element.querySelector('.chatbot__input').disabled = false;
@@ -126,14 +131,39 @@ ChatBotByItchief.prototype._outputContent = function (interval) {
     }
   };
   if (interval) {
-    window.setTimeout(function () {
-      fn1();
-      window.setTimeout(function () {
-        fn2();
-      }, interval);
-    }, interval);
+    var times = 1;
+    if (Array.isArray(botContent)) {
+      for (var i = 0, length = botContent.length; i < length; i++) {
+        const $botContent = this._template('bot', botContent[i]);
+        window.setTimeout(() => {
+          $container.insertAdjacentHTML('beforeend', $botContent);
+          $container.scrollTop = $container.scrollHeight;
+        }, interval * times);
+        times++;
+      }
+    } else {
+      const $botContent = this._template('bot', botContent);
+      window.setTimeout(() => {
+        $container.insertAdjacentHTML('beforeend', $botContent);
+        $container.scrollTop = $container.scrollHeight;
+      }, interval * times);
+      times++;
+    }
+    window.setTimeout(() => {
+      fn2();
+    }, interval * times);
   } else {
-    fn1();
+    if (Array.isArray(botContent)) {
+      for (var i = 0, length = botContent.length; i < length; i++) {
+        const $botContent = this._template('bot', botContent[i]);
+        $container.insertAdjacentHTML('beforeend', $botContent);
+        $container.scrollTop = $container.scrollHeight;
+      }
+    } else {
+      const $botContent = this._template('bot', botContent);
+      $container.insertAdjacentHTML('beforeend', $botContent);
+      $container.scrollTop = $container.scrollHeight;
+    }
     fn2();
   }
 };
@@ -192,17 +222,33 @@ ChatBotByItchief.prototype._eventHandlerClick = function (e) {
     return;
   }
   e.preventDefault();
-  // получаем последние сообщение бота
-  var $botWrapper = document.querySelectorAll('.chatbot__item_bot');
-  var $botContent = $botWrapper[$botWrapper.length - 1];
-  var $botItems = $botContent.querySelectorAll('.chatbot__content');
+  // получаем последние сообщения бота
   var _this = this;
-  for (var i = 0, length = $botItems.length; i < length; i++) {
-    data[_this._contentIndex] = {
-      type: 'bot',
-      content: $botItems[i].innerHTML,
-    };
-    _this._contentIndex++;
+  var $botWrapper = document.querySelectorAll('.chatbot__item_bot');
+  var $botWrapperLast = $botWrapper[$botWrapper.length - 1];
+  var $prev = $botWrapperLast;
+  var $first = $prev;
+  while ($prev) {
+    if (!$prev.classList.contains('chatbot__item_bot')) {
+      break;
+    }
+    $first = $prev;
+    $prev = $prev.previousElementSibling;
+  }
+  var $botContent = $first;
+  while ($botContent) {
+    if (!$botContent.classList.contains('chatbot__item_bot')) {
+      break;
+    }
+    var $botItems = $botContent.querySelectorAll('.chatbot__content');
+    for (var i = 0, length = $botItems.length; i < length; i++) {
+      data[_this._contentIndex] = {
+        type: 'bot',
+        content: $botItems[i].innerHTML,
+      };
+      _this._contentIndex++;
+    }
+    $botContent = $botContent.nextElementSibling;
   }
   data[this._contentIndex] = {
     type: 'human',
