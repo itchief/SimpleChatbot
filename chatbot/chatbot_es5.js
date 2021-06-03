@@ -324,6 +324,12 @@ ChatBotByItchief.prototype._eventHandlerKeydown = function (e) {
 ChatBotByItchief.prototype._addEventListener = function () {
   this._$element.addEventListener('click', this._eventHandlerClick.bind(this));
   this._$element.addEventListener('input', this._eventHandlerKeydown.bind(this));
+  this._$element.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter' && e.target.classList.contains('chatbot__input')) {
+      var $submit = e.target.closest('.chatbot').querySelector('.chatbot__submit');
+      $submit.click();
+    }
+  });
 };
 
 var chatbotTemplate = function chatbotTemplate() {

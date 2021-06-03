@@ -310,6 +310,12 @@ class ChatBotByItchief {
   // подключение обработчиков событий
   #addEventListener() {
     this.#$element.addEventListener('click', this.#eventHandlerClick.bind(this));
+    this.#$element.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter' && e.target.classList.contains('chatbot__input')) {
+        const $submit = e.target.closest('.chatbot').querySelector('.chatbot__submit');
+        $submit.click();
+      }
+    });
     this.#$element.addEventListener('input', this.#eventHandlerKeydown.bind(this));
   }
 }
