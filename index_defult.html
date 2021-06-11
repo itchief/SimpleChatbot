@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Chatbot on pure JavaScript by Itchief</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      font-family: sans-serif;
+      line-height: 1.15;
+      -webkit-text-size-adjust: 100%;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+        'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+        'Noto Color Emoji';
+      font-size: 0.75rem;
+      font-weight: 400;
+      line-height: 1.5;
+      color: #212529;
+      text-align: left;
+      background-color: #fff;
+      margin: 50px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+  </style>
+  <link rel="stylesheet" href="/chatbot/chatbot.css">
+</head>
+
+<body>
+
+  <h1>Simple Chatbot on pure JavaScript by Itchief</h1>
+
+  <!-- chatbot-btn -->
+  <div class="chatbot__btn">
+    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 20 20" width="20" height="20">
+      <path fill="currentColor"
+        d="M14 8.999v-5a2.003 2.003 0 00-2-2H3a2.003 2.003 0 00-2 2v5a2.003 2.003 0 002 2v1.694a.302.302 0 00.486.244l2.587-1.945H12A1.997 1.997 0 0014 9zm3-2h-2v2a3.003 3.003 0 01-3 3H7v2a2.003 2.003 0 002 2h3.927l2.59 1.941c.198.15.483.004.483-.243v-1.701h1a2.003 2.003 0 002-1.997v-5a2.003 2.003 0 00-2-2z" />
+    </svg>
+    <div class="chatbot__tooltip">Есть вопрос?</div>
+  </div>
+
+
+  <!-- FingerPrint JS -->
+  <script src="/chatbot/fp2.js"></script>
+  <!-- ChatBot JS -->
+  <script src="/chatbot/chatbot_new.js"></script>
+
+  <script>
+    // конфигурация чат-бота
+    const configChatbot = {};
+    // CSS-селектор кнопки, посредством которой будем вызывать окно диалога с чат-ботом
+    configChatbot.btn = '.chatbot__btn';
+    // ключ для хранения отпечатка браузера
+    configChatbot.key = 'fingerprint';
+    // реплики чат-бота
+    configChatbot.replicas = {
+      bot: {
+        0: {
+          content: ['Привет!', 'Я Инфинити - бот поддержки сайта <a href="https://itchief.ru" target="_blank">itchief.ru</a>'], human: [0, 1, 2]
+        },
+        1: { content: 'Я тоже рад, как мне к Вам обращаться?', human: [3] },
+        2: { content: 'Как мне к Вам обращаться?', human: [3] },
+        3: { content: '{{name}}, что Вас интересует?', human: [4, 5] },
+        4: { content: '{{name}}, для этого перейдите на <a href="https://itchief.ru/javascript/chatbot-for-website" target="_blank">эту страницу</a>. Она содержит подробную инструкцию по использованию этого чат-бота.', human: [6] },
+        5: { content: "{{name}}, какой у Вас вопрос?", human: [7] },
+        6: { content: '{{name}}, мы получили Ваш вопрос! Скажите, как с Вами удобнее будет связаться?', human: [8, 9] },
+        7: { content: '{{name}}, укажите пожалуйста ваш телефон', human: [10] },
+        8: { content: '{{name}}, укажите пожалуйста ваш Email ниже', human: [10] },
+        9: { content: 'Готово! {{name}}, мы свяжемся с вами в ближайшее время по {{contact}}. Всего хорошего!', human: [6] },
+      },
+      human: {
+        0: { content: 'Привет! Я рад с тобой познакомиться', bot: 1 },
+        1: { content: 'Салют!', bot: 2 },
+        2: { content: 'Приветик, Инфинити!', bot: 2 },
+        3: { content: '', bot: 3, name: 'name' },
+        4: { content: 'Меня интересует, как я могу использовать этот чат-бот у себя на сайте', bot: 4 },
+        5: { content: 'Хочу оставить запрос разработчику чат-бота', bot: 5 },
+        6: { content: 'В начало', bot: 3 },
+        7: { content: '', bot: 6, name: '' },
+        8: { content: 'по телефону', bot: 7 },
+        9: { content: 'по email', bot: 8 },
+        10: { content: '', bot: 9, name: 'contact' },
+      }
+    }
+    // корневой элемент
+    configChatbot.root = SimpleChatbot.createTemplate();
+    // URL chatbot.php
+    configChatbot.url = '/chatbot/chatbot.php';
+    // создание SimpleChatbot
+    let chatbot = new SimpleChatbot(configChatbot);
+    // при клике по кнопке configChatbot.btn
+    document.querySelector(configChatbot.btn).onclick = function(e) {
+      this.classList.add('chatbot__btn_hidden');
+      const $tooltip = this.querySelector('.chatbot__tooltip');
+      if ($tooltip) {
+        $tooltip.classList.remove('chatbot__tooltip_show');
+      }
+      configChatbot.root.classList.toggle('chatbot_hidden');
+      chatbot.init();
+    };
+
+    // добавление ключа для хранения отпечатка браузера в LocalStorage
+    let fingerprint = localStorage.getItem(configChatbot.key);
+    if (!fingerprint) {
+      Fingerprint2.get(function (components) {
+        fingerprint = Fingerprint2.x64hash128(components.map(function (pair) { return pair.value }).join(), 31)
+        localStorage.setItem(configChatbot.key, fingerprint)
+      });
+    }
+    setTimeout(function() {
+      const tooltip = document.querySelector('.chatbot__tooltip');
+      tooltip.classList.add('chatbot__tooltip_show');
+      setTimeout(function() {
+        tooltip.classList.remove('chatbot__tooltip_show');
+      }, 10000)
+    }, 10000);
+
+  </script>
+
+</body>
+
+</html>
