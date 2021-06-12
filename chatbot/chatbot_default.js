@@ -247,6 +247,8 @@ SimpleChatbot.prototype._eventHandlerClick = function (e) {
     $target.closest('.chatbot').classList.add('chatbot_hidden');
     document.querySelector('.chatbot__btn').classList.remove('d-none');
     return;
+  } else if ($target.classList.contains('chatbot__reset')) {
+    this.reset();
   } else {
     return;
   }
@@ -379,7 +381,7 @@ SimpleChatbot.resetTemplate = function() {
   if (!$root) {
     return;
   }
-  $root.innerHTML = '<div class="chatbot__title"><span class="chatbot__close"></span>Chatbot</div><div class="chatbot__wrapper"><div class="chatbot__items"></div></div><div class="chatbot__footer"><input class="chatbot__input" type="text" disabled><button class="chatbot__submit" type="button" disabled></button></div>';
+  $root.innerHTML = '<div class="chatbot__title"><span class="chatbot__close"></span>Chatbot<span class="chatbot__reset"></span></div><div class="chatbot__wrapper"><div class="chatbot__items"></div></div><div class="chatbot__footer"><input class="chatbot__input" type="text" disabled><button class="chatbot__submit" type="button" disabled></button></div>';
 };
 
 // основной шаблон чат-бота
@@ -390,7 +392,7 @@ SimpleChatbot.createTemplate = function() {
   }
   const $fragment = document.createElement('div');
   $fragment.className = 'chatbot chatbot_hidden';
-  $fragment.innerHTML = '<div class="chatbot__title"><span class="chatbot__close"></span>Chatbot</div><div class="chatbot__wrapper"><div class="chatbot__items"></div></div><div class="chatbot__footer"><input class="chatbot__input" type="text" disabled><button class="chatbot__submit" type="button" disabled></button></div>';
+  $fragment.innerHTML = '<div class="chatbot__title"><span class="chatbot__close"></span>Chatbot<span class="chatbot__reset"></span></div><div class="chatbot__wrapper"><div class="chatbot__items"></div></div><div class="chatbot__footer"><input class="chatbot__input" type="text" disabled><button class="chatbot__submit" type="button" disabled></button></div>';
   document.body.appendChild($fragment);
   return document.querySelector('.chatbot');
 };
