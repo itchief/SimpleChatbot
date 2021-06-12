@@ -226,6 +226,7 @@ SimpleChatbot.prototype._eventHandlerClick = function (e) {
     if ($target.closest('.chatbot__submit').disabled) {
       return;
     }
+    $target.closest('.chatbot__submit').disabled = true;
     if (!this._$root.querySelector('.chatbot__input').value.length) {
       return;
     }
