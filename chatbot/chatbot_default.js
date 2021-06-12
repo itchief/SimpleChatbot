@@ -35,17 +35,21 @@ function SimpleChatbot(config) {
   if (config['replicas']) {
     this._replicas = config['replicas'];
   } else {
-    throw 'SimpleChatbot: ключ data должен присутствовать в передаваемых данных';
+    throw 'SimpleChatbot: ключ replicas должен присутствовать в передаваемых данных';
   }
   this._url = config['url'] ? config['url'] : '/chatbot/chatbot.php';
   this._key = config['key'] ? config['key'] : 'fingerprint';
   this._delay = 500;
-  this._botId = 0;
+  // индекс текущей реплики bot
+  this._botIndex = 0;
+
   this._contentIndex = 1;
   this._start = true;
-  this._fields = {};
+  // переменные чат-бота
+  this._params = {};
   this._active = false;
 };
+
 
 // init
 SimpleChatbot.prototype.init = function () {
@@ -53,22 +57,23 @@ SimpleChatbot.prototype.init = function () {
     return;
   }
   this._active = true;
-  var fromStorage = localStorage.getItem('chatbot');
-  if (fromStorage) {
-    var dataFromStorage = JSON.parse(fromStorage);
-    for (var key in dataFromStorage.fields) {
-      this._fields[key] = dataFromStorage.fields[key];
-    }
-    var html = [];
-    for (var i = 0, length = dataFromStorage.data.length; i < length; i++) {
-      var value = dataFromStorage.data[i];
-      var state = value.type === 'bot' ? '' : '-disabled';
-      var code = this._template(value.type, value.content, state);
-      html.push(code);
+  const replicasJson = localStorage.getItem('chatbot');
+  if (replicasJson) {
+    const replicas = JSON.parse(replicasJson);
+    // получим переменные чат-бота из LocalStorage
+    this._params = replicas.params;
+    // установим индекс текущей реплики бота
+    this._botIndex = replicas.botIndex;
+    // формируем html из реплик LocalStorage
+    let html = [];
+    let i = 0;
+    while (i < replicas.data.length) {
+      html.push(SimpleChatbot.templateItem(replicas.data[i]));
+      i++;
     }
     var $container = this._$root.querySelector('.chatbot__items');
     $container.insertAdjacentHTML('beforeend', html.join(''));
-    this._botId = dataFromStorage.botId;
+
     this._outputContent(0);
   } else {
     this._outputContent(this._delay);
@@ -76,13 +81,12 @@ SimpleChatbot.prototype.init = function () {
   this._addEventListener();
 }
 
-
 SimpleChatbot.prototype.reset = function() {
   SimpleChatbot.resetTemplate();
-  this._botId = 0;
+  this._botIndex = 0;
   this._contentIndex = 1;
   this._start = true;
-  this._fields = {};
+  this._params = {};
   this._active = false;
   localStorage.removeItem('chatbot');
   this.init();
@@ -97,8 +101,8 @@ SimpleChatbot.prototype._template = function (type, content, state) {
 };
 
 // шаблон кнопки
-SimpleChatbot.prototype._templateBtn = function (botId, content) {
-  return '<button class="btn" type="button" data-bot-id="' + botId + '">' + content + '</button>';
+SimpleChatbot.prototype._templateBtn = function (botIndex, content) {
+  return '<button class="btn" type="button" data-bot-index="' + botIndex + '">' + content + '</button>';
 };
 
 // получить данные
@@ -109,22 +113,22 @@ SimpleChatbot.prototype._getData = function (target, id) {
 
 // вывод контента
 SimpleChatbot.prototype._outputContent = function (interval) {
-  var botData = this._getData('bot', this._botId);
+  var botData = this._getData('bot', this._botIndex);
   var humanIds = botData.human;
   var $container = this._$root.querySelector('.chatbot__items');
   var botContent = botData.content;
   if (Array.isArray(botContent)) {
     for (var i = 0, length = botContent.length; i < length; i++) {
       if (botContent[i].indexOf('{{') !== -1) {
-        for (let key in this._fields) {
-          botContent[i] = botContent[i].split('{{'.concat(key, '}}')).join(this._fields[key]);
+        for (let key in this._params) {
+          botContent[i] = botContent[i].split('{{'.concat(key, '}}')).join(this._params[key]);
         }
       }
     }
   } else {
     if (botContent.indexOf('{{') !== -1) {
-      for (var key in this._fields) {
-        botContent = botContent.split('{{'.concat(key, '}}')).join(this._fields[key]);
+      for (var key in this._params) {
+        botContent = botContent.split('{{'.concat(key, '}}')).join(this._params[key]);
       }
     }
   }
@@ -138,7 +142,7 @@ SimpleChatbot.prototype._outputContent = function (interval) {
       ).name;
       _this._$root.querySelector('.chatbot__submit').disabled = true;
       _this._$root.querySelector('.chatbot__input').focus();
-      _this._$root.querySelector('.chatbot__submit').dataset.botId = _this._getData(
+      _this._$root.querySelector('.chatbot__submit').dataset.botIndex = _this._getData(
         'human',
         humanIds[0]
       ).bot;
@@ -213,7 +217,7 @@ SimpleChatbot.prototype._addToChatHumanResponse = function (humanContent) {
 // функция для обработки события click
 SimpleChatbot.prototype._eventHandlerClick = function (e) {
   var $target = e.target;
-  var botId = $target.dataset.botId;
+  var botIndex = $target.dataset.botIndex;
   var url = this._url;
   var data = {};
   var humanContent = '';
@@ -225,16 +229,16 @@ SimpleChatbot.prototype._eventHandlerClick = function (e) {
     if (!this._$root.querySelector('.chatbot__input').value.length) {
       return;
     }
-    this._botId = +$target.closest('.chatbot__submit').dataset.botId;
+    this._botIndex = +$target.closest('.chatbot__submit').dataset.botIndex;
     humanContent = this._$root.querySelector('.chatbot__input').value;
     humanField = this._$root.querySelector('.chatbot__input').dataset.name;
     if (humanField) {
-      this._fields[humanField] = humanContent;
+      this._params[humanField] = humanContent;
     }
     this._addToChatHumanResponse(humanContent);
     this._outputContent(this._delay);
-  } else if (botId) {
-    this._botId = +botId;
+  } else if (botIndex) {
+    this._botIndex = +botIndex;
     // переводим ответ пользователя в неактивный
     humanContent = this._humanResponseToDisabled($target);
     // выводим следующий контент
@@ -283,10 +287,10 @@ SimpleChatbot.prototype._eventHandlerClick = function (e) {
 
   var fromStorage = localStorage.getItem('chatbot');
   var dataToStorage = [];
-  var fieldsToStorage = {};
+  var paramsJSON = {};
   if (fromStorage) {
     dataToStorage = JSON.parse(fromStorage).data;
-    fieldsToStorage = JSON.parse(fromStorage).fields;
+    paramsJSON = JSON.parse(fromStorage).params;
   }
   for (var key in data) {
     dataToStorage.push({
@@ -295,12 +299,12 @@ SimpleChatbot.prototype._eventHandlerClick = function (e) {
     });
   }
   if (humanField) {
-    fieldsToStorage[humanField] = humanContent;
+    paramsJSON[humanField] = humanContent;
   }
   var dataToStorageJSON = JSON.stringify({
-    botId: this._botId,
+    botIndex: this._botIndex,
     data: dataToStorage,
-    fields: fieldsToStorage,
+    params: paramsJSON,
   });
   localStorage.setItem('chatbot', dataToStorageJSON);
 
@@ -357,6 +361,19 @@ SimpleChatbot.prototype._addEventListener = function () {
   });
 };
 
+
+
+// шаблон chatbot__item
+SimpleChatbot.templateItem = function (replicas) {
+  let html = '<div class="chatbot__item chatbot__item_{{type}}"><div class="chatbot__content chatbot__content_{{type}}{{state}}">{{content}}</div></div>';
+  html = html.replace('{{type}}', replicas.type);
+  html = html.replace('{{type}}', replicas.type);
+  html = html.replace('{{state}}', replicas.type === 'bot' ? '' : '-disabled');
+  html = html.replace('{{content}}', replicas.content);
+  return html;
+};
+
+// сброс основного шаблона
 SimpleChatbot.resetTemplate = function() {
   let $root = document.querySelector('.chatbot');
   if (!$root) {
@@ -365,6 +382,7 @@ SimpleChatbot.resetTemplate = function() {
   $root.innerHTML = '<div class="chatbot__title">Chatbot<span class="chatbot__close">×</span></div><div class="chatbot__wrapper"><div class="chatbot__items"></div></div><div class="chatbot__footer"><input class="chatbot__input" type="text" disabled><button class="chatbot__submit" type="button" disabled><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16"><path fill="currentColor" d="M476 3.2L12.5 270.6a24 24 0 002.2 43.2L121 358.4l287.3-253.2c5.5-4.9 13.3 2.6 8.6 8.3L176 407v80.5a24 24 0 0042.5 15.8L282 426l124.6 52.2a24 24 0 0033-18.2l72-432A24 24 0 00476 3.2z"/></svg></button></div>';
 };
 
+// основной шаблон чат-бота
 SimpleChatbot.createTemplate = function() {
   let $root = document.querySelector('.chatbot');
   if ($root) {
