@@ -250,6 +250,7 @@ SimpleChatbot.prototype._eventHandlerClick = function (e) {
     return;
   } else if ($target.classList.contains('chatbot__reset')) {
     this.reset();
+    return;
   } else {
     return;
   }
