@@ -118,6 +118,7 @@ SimpleChatbot.prototype._outputContent = function (interval) {
   var $container = this._$root.querySelector('.chatbot__items');
   var botContent = botData.content;
   if (Array.isArray(botContent)) {
+    botContent = botContent.slice();
     for (var i = 0, length = botContent.length; i < length; i++) {
       if (botContent[i].indexOf('{{') !== -1) {
         for (let key in this._params) {
