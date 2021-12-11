@@ -1,7 +1,6 @@
 <?php
 
-
-$path = $_SERVER['DOCUMENT_ROOT'] . '/chatbot/chats//';
+$path = __DIR__ . '/chats/';
 
 $data['result'] = 'success';
 
